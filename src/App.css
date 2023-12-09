@@ -1,0 +1,28 @@
+.successfulLogin {
+  width: 200px;
+  animation-name: fadeIn;
+  animation-duration: 4s;
+}
+
+.successfulLoginText {
+  animation-name: fadeIn;
+  animation-duration: 4s;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacitty: 1;
+  }
+}
+
+.productImage {
+  object-fit: contain;
+}
+
+.productInCartImage {
+  max-width: 70px;
+  object-fit: contain;
+}
