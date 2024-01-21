@@ -1,9 +1,9 @@
 import React, { useCallback, useState } from 'react';
 import { Box, Button, Dialog, Divider, Stack, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { logoutThunk } from '../store/authSlice';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '../store';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const styles = {
   title: {
@@ -29,11 +29,13 @@ const styles = {
 };
 
 export default function LogoutPage(): JSX.Element {
+  const { logout } = useAuth0();
   const navigate = useNavigate();
-  const dispatch: AppDispatch = useDispatch();
+  // const dispatch: AppDispatch = useDispatch();
 
-  const logout = useCallback(() => {
-    dispatch(logoutThunk());
+  const handleLogout = useCallback(() => {
+    // dispatch(logoutThunk());
+    logout();
     navigate('/');
   }, []);
 
@@ -63,7 +65,7 @@ export default function LogoutPage(): JSX.Element {
           divider={<Divider orientation="vertical" flexItem />}
           spacing={2}
         >
-          <Button variant="contained" onClick={logout}>
+          <Button variant="contained" onClick={handleLogout}>
             Yes
           </Button>
           <Button variant="contained" onClick={goBack}>

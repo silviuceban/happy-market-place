@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { store } from '../store';
 import { CartIcon } from './CartIcon';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const styles = {
   btn: {
@@ -41,6 +42,7 @@ const styles = {
 };
 
 export default function Menu(): JSX.Element {
+  const { isAuthenticated } = useAuth0();
   const authState = useSelector(store.getState);
 
   const [open, setOpen] = React.useState(false);
@@ -102,7 +104,7 @@ export default function Menu(): JSX.Element {
         >
           <List>
             {routerElements.map((element) => {
-              if (!!authState.auth.token && element.url !== '/login') {
+              if (isAuthenticated && element.url !== '/login') {
                 return (
                   <ListItem
                     button
@@ -114,10 +116,7 @@ export default function Menu(): JSX.Element {
                     <ListItemText primary={element.label} />
                   </ListItem>
                 );
-              } else if (
-                !!!authState.auth.token &&
-                (element.url === '/' || element.url === '/login')
-              ) {
+              } else if (element.url === '/' || element.url === '/login') {
                 return (
                   <ListItem
                     button

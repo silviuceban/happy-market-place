@@ -33,6 +33,7 @@
     "react/prop-types": "off",
     "import/prefer-default-export": "off",
     "no-param-reassign": "off",
+    "@typescript-eslint/no-explicit-any": "off", //change later
     "@typescript-eslint/interface-name-prefix": "off",
     "@typescript-eslint/indent": "off",
     "no-plusplus": "off",

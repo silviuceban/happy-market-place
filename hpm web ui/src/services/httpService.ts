@@ -8,7 +8,8 @@ export interface ApiResponse<T> {
 
 const defaultAxiosOptions = {
   // baseURL: process.env.NODE_ENV === 'development' ? '/' : '/NewTempo/',
-  baseURL: 'https://fakestoreapi.com/',
+  // baseURL: 'https://fakestoreapi.com/',
+  baseURL: '/',
 };
 
 let appStore: AppStore;
@@ -21,12 +22,18 @@ export function getToken(): string | null {
   return appStore.getState().auth.token;
 }
 
+let token: string | null = null;
+
+export const setToken = (accessToken: string): void => {
+  token = accessToken;
+};
+
 // export function getUserId(): string | undefined {
 //   return appStore.getState().auth.userDetails?.nameid;
 // }
 
 const authorizationInterceptor = (config: AxiosRequestConfig) => {
-  const token = getToken();
+  // const token = getToken();
   //   const token = '123';
   if (token) {
     const authHeader = { Authorization: 'Bearer ' + token };

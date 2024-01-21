@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Box } from '@mui/system';
 import { ProductCard } from '../components/ProductCard';
 import { useDispatch } from 'react-redux';
@@ -12,6 +12,7 @@ import {
 } from '../store/productsSlice';
 import { Product } from '../models/product';
 import { CircularProgress, Typography } from '@mui/material';
+import { getData, getProd } from '../services/api/productsService';
 
 const styles = {
   topLevelBox: {
@@ -63,31 +64,54 @@ export default function ProductsPage(): JSX.Element {
     [productsCount, isLoading]
   );
 
-  useEffect(() => {
-    const option = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 1.0,
-    };
+  const handleGetData = useCallback(() => {
+    getData()
+      .then(() => {
+        console.log('hit');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
-    const observer = new IntersectionObserver(handleObserver, option);
-    if (loader.current) {
-      observer.observe(loader.current);
-    }
+  const handleGetProducts = useCallback(() => {
+    getProd()
+      .then(() => {
+        console.log('hit');
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
-    return () => {
-      observer.disconnect();
-    };
-  }, [handleObserver]);
+  // useEffect(() => {
+  //   const option = {
+  //     root: null,
+  //     rootMargin: '0px',
+  //     threshold: 1.0,
+  //   };
 
-  useEffect(() => {
-    if (productsCount) {
-      dispatch(productsThunk(productsCount));
-    }
-  }, [productsCount]);
+  //   const observer = new IntersectionObserver(handleObserver, option);
+  //   if (loader.current) {
+  //     observer.observe(loader.current);
+  //   }
+
+  //   return () => {
+  //     observer.disconnect();
+  //   };
+  // }, [handleObserver]);
+
+  // useEffect(() => {
+  //   if (productsCount) {
+  //     dispatch(productsThunk(productsCount));
+  //   }
+  // }, [productsCount]);
 
   return (
     <Box sx={styles.topLevelBox}>
+      <button onClick={handleGetData}>get data</button>
+      <button onClick={handleGetProducts}>get products</button>
+
       <Box sx={styles.productsBox}>
         {products.map((product: Product) => {
           return (

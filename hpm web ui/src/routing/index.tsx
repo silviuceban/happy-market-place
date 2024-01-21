@@ -8,8 +8,10 @@ import Page404 from '../pages/Page404';
 import LoginPage from '../pages/LoginPage';
 import AdminPage from '../pages/AdminPage';
 import LogoutPage from '../pages/LogoutPage';
+import { ChallangesPage } from '../pages/ChallangesPage';
 import { useSelector } from 'react-redux';
 import { store } from '../store';
+import { useAuth0 } from '@auth0/auth0-react';
 
 interface RouterElement {
   url: string;
@@ -38,6 +40,13 @@ export const routerElements: RouterElement[] = [
     component: CartPage,
     isProtected: true,
   },
+  {
+    url: '/challanges',
+    label: 'Challanges',
+    component: ChallangesPage,
+    isProtected: true,
+  },
+
   //   {
   //     url: '/producs/:productId',
   //     label: 'product',
@@ -67,6 +76,10 @@ export const routerElements: RouterElement[] = [
 
 export function RouterItems(): JSX.Element {
   const authState = useSelector(store.getState);
+  const { isAuthenticated } = useAuth0();
+
+  console.log(isAuthenticated);
+
   // const authState = { auth: { token: '123' } };
   // const authState = { auth: { token: '' } };
 
@@ -74,12 +87,12 @@ export function RouterItems(): JSX.Element {
     () =>
       routerElements.filter(
         (element) =>
-          element.isProtected === !!authState.auth.token ||
+          element.isProtected === isAuthenticated ||
           element.url === '/login' ||
           element.url === '/'
         // (element) => element
       ),
-    [authState]
+    [isAuthenticated]
   );
 
   return (

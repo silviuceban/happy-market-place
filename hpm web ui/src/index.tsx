@@ -9,6 +9,7 @@ import { store } from './store';
 import { Provider } from 'react-redux';
 import { persistStore } from 'redux-persist';
 import { PersistGate } from 'redux-persist/integration/react';
+import { Auth0Provider } from '@auth0/auth0-react';
 // import { configureStore } from '@reduxjs/toolkit';
 
 const container = document.getElementById('root') as HTMLElement;
@@ -21,9 +22,20 @@ root.render(
   // <React.StrictMode>
   <Provider store={store}>
     <PersistGate persistor={persistor}>
-      <BrowserRouter>
-        <App />
-      </BrowserRouter>
+      <Auth0Provider
+        domain="dev-g10af3b2ljs4f5f1.us.auth0.com"
+        clientId="W9u1h7iL0OlL6FcrTEJItAWym4JVaghD"
+        authorizationParams={{
+          // redirect_uri: window.location.origin,
+          redirect_uri: 'http://localhost:3000/challanges',
+          audience: 'http://localhost:5000/',
+          // scope: 'read:products',
+        }}
+      >
+        <BrowserRouter>
+          <App />
+        </BrowserRouter>
+      </Auth0Provider>
     </PersistGate>
   </Provider>
   // </React.StrictMode>

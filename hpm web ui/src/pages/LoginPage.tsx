@@ -23,6 +23,8 @@ import { LoginData } from '../services/api/authService';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import succesfulLogin from '../assets/images/tick.png';
+import { httpService } from '../services/httpService';
+import { useAuth0 } from '@auth0/auth0-react';
 
 const styles = {
   topLevelBox: {
@@ -77,6 +79,20 @@ export default function LoginPage(): JSX.Element {
     formState: { errors },
   } = useForm();
 
+  // const domain = 'dev-g10af3b2ljs4f5f1.us.auth0.com';
+  // const audience = 'http://localhost:5000/';
+  // const scope = 'read:products';
+  // const clientId = 'W9u1h7iL0OlL6FcrTEJItAWym4JVaghD';
+  // const responseType = 'code';
+  // const redirectUri = 'http://localhost:3000/challanges';
+  const { loginWithRedirect, logout } = useAuth0();
+  const login = useCallback(async () => {
+    loginWithRedirect();
+  }, []);
+  const logoutFn = useCallback(async () => {
+    logout({ logoutParams: { returnTo: window.location.origin } });
+  }, []);
+
   const onSubmit = async (data: FieldValues): Promise<void> => {
     const username: string = data.username;
     const password: string = data.password;
@@ -103,7 +119,9 @@ export default function LoginPage(): JSX.Element {
 
   return (
     <Box sx={styles.topLevelBox}>
-      {showWelcome ? (
+      <button onClick={login}>login</button>
+      <button onClick={logoutFn}>logout</button>
+      {/* {showWelcome ? (
         <Stack spacing={5}>
           <Box sx={{ display: 'flex', justifyContent: 'center' }}>
             <img
@@ -170,7 +188,7 @@ export default function LoginPage(): JSX.Element {
         >
           Invalid login or password
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
     </Box>
   );
 }
