@@ -1,11 +1,10 @@
-const { Pool } = require('pg')
+import pkg from "pg";
+const { Pool } = pkg;
 
-const poolExp = new Pool({
-  host: 'localhost',
+export const pool = new Pool({
+  host: "localhost",
   port: 5432,
-  database: 'hmp_db',
-  user: 'postgres',
-  password: 'polkklop',
-})
-
-module.exports = { pool: poolExp }
+  database: "hmp_db",
+  user: "postgres",
+  password: "polkklop",
+});

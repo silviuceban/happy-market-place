@@ -1,54 +1,51 @@
-/* eslint-disable @typescript-eslint/quotes */
-const express = require('express')
-const app = express()
-const { auth } = require('express-oauth2-jwt-bearer')
-const { pool } = require('./database/pool.ts')
-const { authConfig } = require('./config/auth.ts')
+import express from "express";
+import { auth } from "express-oauth2-jwt-bearer";
+import { authConfig } from "./config/auth.js";
+import { pool } from "./database/pool.js";
+const app = express();
 
-const port = process.env.PORT || 5000
+const port = process.env.PORT || 5000;
 
-const jwtCheck = auth(authConfig)
+const jwtCheck = auth(authConfig);
 
 // enforce on all endpoints
 // app.use(jwtCheck)
 
-app.get('/data', (req, res) => {
-  res.send('Secured Resource result asdajgsdkaj')
-})
+app.get("/data", (req, res) => {
+  res.send("Secured Resource result asdajgsdkaj");
+});
 
-const getProductsWithPagination = `SELECT id, name, ROUND(ROW_NUMBER() OVER (ORDER BY name ASC) / 1, 0, 1) AS PageIndex FROM public.products ORDER BY PageIndex, name WHERE PageIndex = 1;`
-
-app.get('/products', jwtCheck, async (req, res) => {
+app.get("/products", jwtCheck, async (req, res) => {
   try {
-    const client = await pool.connect()
+    const client = await pool.connect();
 
     // SELECT * FROM public.products
 
-    const result = await client.query('SELECT * FROM public.products')
-    res.json(result.rows)
+    const result = await client.query("SELECT * FROM public.products");
+    res.json(result.rows);
   } catch (error) {
-    console.log(error.message)
+    console.log(error.message);
   }
-})
+});
 
-app.listen(port)
+app.listen(port);
 
-console.log('Running on port ', port)
+console.log("Running on port ", port);
 
-process.on('exit', () => {
+process.on("exit", () => {
   // Close the connection pool gracefully
-  pool.end()
-})
+  pool.end();
+});
 
 // Handle other signals like SIGINT and SIGTERM for graceful shutdown
-process.on('SIGINT', () => {
+process.on("SIGINT", () => {
   pool.end(() => {
-    process.exit(0)
-  })
-})
+    process.exit(0);
+  });
+});
 
-process.on('SIGTERM', () => {
+process.on("SIGTERM", () => {
   pool.end(() => {
-    process.exit(0)
-  })
-})
+    process.exit(0);
+  });
+});
