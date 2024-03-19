@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Button, Divider, Paper, Stack, Typography } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { selectProductsInCart } from '../store/cartSlice';
+import { selectProductsInCart } from '../store/features/cartSlice';
 import { ProductInCart } from '../components/ProductInCart';
 import { Box } from '@mui/system';
+import { useAuth0 } from '@auth0/auth0-react';
+import { postOrder } from '../services/api/ordersService';
+import { selectUser } from '../store/features/userSlice';
+import { useAppSelector } from '../store/hooks';
+import { OrderParams } from '../models/orders';
 
 const styles = {
   topLevelBox: {
@@ -29,13 +34,58 @@ const styles = {
   },
 };
 export default function CartPage(): JSX.Element {
-  const productsInCart = useSelector(selectProductsInCart);
+  const productsInCart = useAppSelector(selectProductsInCart);
+
+  const user = useAppSelector(selectUser);
+
+  console.log(user);
 
   let totalAmount = 0;
 
   productsInCart.forEach((product) => {
-    totalAmount += product.quantity * product.product.price;
+    totalAmount += product.quantity * Number(product.product.price);
   });
+
+  //   customerId: string;
+  //   shippmentAddres: string;
+  //   paymentMethod: string;
+  //   productId: string;
+  //   unitPrice: number;
+  //   quantity: number;
+  // }
+
+  const orderData: any = useMemo(() => {
+    if (user?.sub) {
+      const data = productsInCart.map((prod) => {
+        return {
+          productId: prod.product.id,
+          quantity: prod.quantity,
+          unitPrice: Number(prod.product.price),
+          shippmentAddress: 'Strada Sperantei nr.1',
+          paymentMethod: 'card',
+          customerId: user.sub,
+        };
+      });
+
+      return data;
+    } else {
+      return null;
+    }
+  }, [productsInCart, user]);
+
+  console.log(orderData);
+
+  const handleOrder = useCallback(() => {
+    if (orderData) {
+      postOrder(orderData)
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [postOrder, orderData]);
 
   return (
     <Box sx={styles.topLevelBox}>
@@ -49,7 +99,7 @@ export default function CartPage(): JSX.Element {
             return (
               <ProductInCart
                 image={item.product.image}
-                title={item.product.title}
+                title={item.product.name}
                 price={item.product.price}
                 quantity={item.quantity}
                 id={item.product.id}
@@ -74,6 +124,7 @@ export default function CartPage(): JSX.Element {
             variant="contained"
             size="large"
             sx={{ width: 330, fontWeight: 'bold', mb: 5 }}
+            onClick={handleOrder}
           >
             Buy
           </Button>

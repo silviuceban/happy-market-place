@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import {
   changeDisplayedProducts,
   selectProductsToDisplay,
-} from '../store/productsSlice';
+} from '../store/features/productsSlice';
 
 export default function AdminPage(): JSX.Element {
   const dispatch = useDispatch();

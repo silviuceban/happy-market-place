@@ -2,16 +2,16 @@ import React, { useMemo } from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { SvgIconTypeMap } from '@mui/material';
 import { OverridableComponent } from '@mui/material/OverridableComponent';
-import ProductsPage from '../pages/ProductsPage';
+import HomePage from '../pages/HomePage';
 import CartPage from '../pages/CartPage';
 import Page404 from '../pages/Page404';
 import LoginPage from '../pages/LoginPage';
 import AdminPage from '../pages/AdminPage';
 import LogoutPage from '../pages/LogoutPage';
-import { ChallangesPage } from '../pages/ChallangesPage';
 import { useSelector } from 'react-redux';
 import { store } from '../store';
 import { useAuth0 } from '@auth0/auth0-react';
+import { OrdersPage } from '../pages/OrdersPage';
 
 interface RouterElement {
   url: string;
@@ -24,8 +24,8 @@ interface RouterElement {
 export const routerElements: RouterElement[] = [
   {
     url: '/',
-    label: 'Products',
-    component: ProductsPage,
+    label: 'Home',
+    component: HomePage,
     isProtected: false,
   },
   {
@@ -41,10 +41,10 @@ export const routerElements: RouterElement[] = [
     isProtected: true,
   },
   {
-    url: '/challanges',
-    label: 'Challanges',
-    component: ChallangesPage,
-    isProtected: true,
+    url: '/orders',
+    label: 'Orders',
+    component: OrdersPage,
+    isProtected: false,
   },
 
   //   {
@@ -58,7 +58,7 @@ export const routerElements: RouterElement[] = [
     url: '/admin',
     label: 'Admin',
     component: AdminPage,
-    isProtected: true,
+    isProtected: false,
   },
   {
     url: '/logout',
@@ -75,10 +75,7 @@ export const routerElements: RouterElement[] = [
 ];
 
 export function RouterItems(): JSX.Element {
-  const authState = useSelector(store.getState);
   const { isAuthenticated } = useAuth0();
-
-  console.log(isAuthenticated);
 
   // const authState = { auth: { token: '123' } };
   // const authState = { auth: { token: '' } };

@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
-import { AppStore } from '../store';
+// import { auto } from '@auth0/auth0-react';
 
 export interface ApiResponse<T> {
   items: T[];
@@ -12,25 +12,16 @@ const defaultAxiosOptions = {
   baseURL: '/',
 };
 
-let appStore: AppStore;
-
-export function setStore(store: AppStore): void {
-  appStore = store;
-}
-
-export function getToken(): string | null {
-  return appStore.getState().auth.token;
-}
-
 let token: string | null = null;
 
+let getTokenFn: () => any = () => {};
+
+export const setGetNewAccessTokenFn = (arg: () => any): any => {
+  getTokenFn = arg;
+};
 export const setToken = (accessToken: string): void => {
   token = accessToken;
 };
-
-// export function getUserId(): string | undefined {
-//   return appStore.getState().auth.userDetails?.nameid;
-// }
 
 const authorizationInterceptor = (config: AxiosRequestConfig) => {
   // const token = getToken();
@@ -48,43 +39,62 @@ const authorizationInterceptor = (config: AxiosRequestConfig) => {
   return config;
 };
 
-// setTimeout(() => {
-//   console.log(getUserId());
-// }, 0);
+function refreshTokenInterceptor(err: any) {
+  const originalConfig = err.config;
 
-// const refreshTokenInterceptor = (err) => {
-//   const originalConfig = err.config;
+  if (
+    !(
+      originalConfig.url == '/oauth/token' && originalConfig.method == 'post'
+    ) &&
+    err.response
+  ) {
+    if (err.response.status === 401) {
+      console.log(originalConfig);
 
-//   // console.log("err config OBJECT----------------------------------------------------------------",originalConfig._retry)
+      originalConfig._retry = true;
 
-//   if (!(originalConfig.url == "/api/Auth" && originalConfig.method == "post") && err.response) {
+      console.log('hit interceptor');
 
-//     if (err.response.status === 401 && !originalConfig._retry) {
+      // getTokenFn().then((res: any) => {
+      //   console.log(res);
 
-//       originalConfig._retry = true;
-//       this.post("/api/Auth/RefreshToken", { accessToken: sessionStorage.bearer }).then((resp) => {
-//         sessionStorage.bearer = resp.data;
-//         return this.axiosInstance(originalConfig);
-//       })
-//         .catch(_error => {
+      //   setToken(res);
+      // });
 
-//           sessionStorage.removeItem("bearer");
-//           router.push("/login");
-//           return Promise.reject(_error);
-//         });
-//     }
-//   }
-//   return Promise.reject(err);
-// }
+      // axios
+      //   .post('https://dev-g10af3b2ljs4f5f1.us.auth0.com/oauth/token', {
+      //     grant_type: 'refresh_token',
+      //     client_id: 'W9u1h7iL0OlL6FcrTEJItAWym4JVaghD',
+      //     client_secret:
+      //       'PJqnFhADMTmpbJXSzdG62ZKhsqWUM70-cpBmo9qiajZP5quGu6pM2TtVnJNOkZL4',
+      //     refresh_token: 'refreshToken',
+      //   })
+      //   .then((resp: any) => {
+      //     //
+
+      //     // return axios.axiosInstance(originalConfig);
+      //     return;
+      //   })
+      //   .catch((_error: unknown) => {
+      //     sessionStorage.removeItem('bearer');
+      //     // router.push('/login');
+
+      //     return Promise.reject(_error);
+      //   });
+    }
+  }
+
+  return Promise.reject(err);
+}
 
 class HttpService {
   private axiosInstance: AxiosInstance;
 
   constructor() {
     this.axiosInstance = axios.create(defaultAxiosOptions);
-
     this.axiosInstance.interceptors.request.use(authorizationInterceptor);
-    // this.axiosInstance.interceptors.response.use(authorizationInterceptor);
+    // this.axiosInstance.interceptors.response.use(function () {},
+    // refreshTokenInterceptor);
   }
 
   get<D = unknown>(

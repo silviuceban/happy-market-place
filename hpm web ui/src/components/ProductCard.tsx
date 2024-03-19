@@ -13,15 +13,15 @@ import { Box } from '@mui/system';
 import { RatingType } from '../models/product';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useDispatch } from 'react-redux';
-import { addProduct } from '../store/cartSlice';
+import { addProduct } from '../store/features/cartSlice';
 
 interface Props {
   img: string;
-  title: string;
-  description: string;
-  price: number;
+  name: string;
+  description?: string;
+  price: string;
   id: number;
-  category: string;
+  // category: string;
   rating: RatingType;
 }
 
@@ -45,7 +45,7 @@ const styles = {
 };
 
 export function ProductCard(props: Props): JSX.Element {
-  const { id, img, title, description, price, rating, category } = props;
+  const { id, img, name, description = 'desc', price, rating } = props;
   const dispatch = useDispatch();
 
   const addToCart = useCallback(() => {
@@ -54,10 +54,10 @@ export function ProductCard(props: Props): JSX.Element {
         product: {
           id,
           image: img,
-          title,
+          name,
           description,
           price,
-          category,
+
           rating,
         },
         quantity: 1,
@@ -73,12 +73,12 @@ export function ProductCard(props: Props): JSX.Element {
       <Box>
         <CardContent sx={{ backgroundColor: 'secondary.light' }}>
           <Typography gutterBottom component="div" sx={{ fontSize: 20 }}>
-            {`${title.slice(0, 23)}...`}
+            {`${name.slice(0, 23)}...`}
           </Typography>
           <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
             {`${description.slice(0, 100)}...`}
           </Typography>
-          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+          {/* <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
             <Rating
               name="read-only"
               value={rating.rate}
@@ -95,7 +95,7 @@ export function ProductCard(props: Props): JSX.Element {
             >
               ({rating.count})
             </Typography>
-          </Box>
+          </Box> */}
           <Typography sx={{ fontWeight: 'bold', ml: 0.6 }}>
             Price: {price}
           </Typography>

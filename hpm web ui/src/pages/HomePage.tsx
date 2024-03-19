@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Box } from '@mui/system';
 import { ProductCard } from '../components/ProductCard';
 import { useDispatch } from 'react-redux';
@@ -9,10 +9,17 @@ import {
   selectIsLoading,
   selectProducts,
   selectProductsToDisplay,
-} from '../store/productsSlice';
+} from '../store/features/productsSlice';
 import { Product } from '../models/product';
 import { CircularProgress, Typography } from '@mui/material';
-import { getData, getProd } from '../services/api/productsService';
+import {
+  getData,
+  getLogin,
+  getProd,
+  getProducts,
+} from '../services/api/productsService';
+import { useAppDispatch } from '../store/hooks';
+import { postOrder } from '../services/api/ordersService';
 
 const styles = {
   topLevelBox: {
@@ -40,14 +47,14 @@ const styles = {
 
 const maxAvailableProducts = 20;
 
-export default function ProductsPage(): JSX.Element {
+export default function HomePage(): JSX.Element {
   const productsToDisplay = useSelector(selectProductsToDisplay);
 
   const [productsCount, setProductsCount] = useState(productsToDisplay);
 
   const loader = useRef(null);
 
-  const dispatch: AppDispatch = useDispatch();
+  const dispatch: AppDispatch = useAppDispatch();
 
   const products = useSelector(selectProducts);
 
@@ -65,24 +72,24 @@ export default function ProductsPage(): JSX.Element {
   );
 
   const handleGetData = useCallback(() => {
-    getData()
-      .then(() => {
-        console.log('hit');
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // postOrder(['asd', 'asasjhb'])
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
   }, []);
 
   const handleGetProducts = useCallback(() => {
-    getProd()
+    getProducts({})
       .then(() => {
         console.log('hit');
       })
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }, [getProd]);
 
   // useEffect(() => {
   //   const option = {
@@ -107,6 +114,10 @@ export default function ProductsPage(): JSX.Element {
   //   }
   // }, [productsCount]);
 
+  useEffect(() => {
+    dispatch(productsThunk({}));
+  }, [dispatch, productsThunk]);
+
   return (
     <Box sx={styles.topLevelBox}>
       <button onClick={handleGetData}>get data</button>
@@ -117,12 +128,12 @@ export default function ProductsPage(): JSX.Element {
           return (
             <ProductCard
               img={product.image}
-              title={product.title}
+              name={product.name}
               description={product.description}
               price={product.price}
               rating={product.rating}
               id={product.id}
-              category={product.category}
+              // category={product.category}
               key={product.id}
             />
           );

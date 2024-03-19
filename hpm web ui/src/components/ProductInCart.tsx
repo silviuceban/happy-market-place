@@ -2,12 +2,12 @@ import React, { useCallback } from 'react';
 import { Box } from '@mui/system';
 import { Button, Stack, TextField, Typography } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { changeQuantity, removeProduct } from '../store/cartSlice';
+import { changeQuantity, removeProduct } from '../store/features/cartSlice';
 
 interface Props {
   image: string;
   title: string;
-  price: number;
+  price: string;
   quantity: number;
   id: number;
 }
@@ -137,20 +137,9 @@ export function ProductInCart({
       </Box>
       <Box sx={styles.contentBox}>
         <Box sx={styles.priceBox}>
-          <Typography>${price.toFixed(2)}</Typography>
+          <Typography>${Number(price).toFixed(2)}</Typography>
         </Box>
       </Box>
     </Stack>
   );
 }
-
-// No overload matches this call.
-//   Overload 1 of 2, '(props: { component: ElementType<any>; } & SystemProps<Theme> & { align?: "center" | "right" | "left" | "inherit" | "justify" | undefined; children?: ReactNode; ... 6 more ...; variantMapping?: Partial<...> | undefined; } & CommonProps & Omit<...>): Element', gave the following error.
-//     Type '{ fontSize: number[]; fontWeight: string; color: string; textAlign: string; width: number; }' is not assignable to type 'SxProps<Theme> | undefined'.
-//       Type '{ fontSize: number[]; fontWeight: string; color: string; textAlign: string; width: number; }' is not assignable to type 'CSSSelectorObjectOrCssVariables<Theme>'.
-//         Property 'fontSize' is incompatible with index signature.
-//           Type 'number[]' is not assignable to type 'CssVariableType | SystemStyleObject<Theme> | ((theme: Theme) => string | number | SystemStyleObject<Theme>)'.
-//             Type 'number[]' is not assignable to type 'CSSSelectorObjectOrCssVariables<Theme>'.
-//               Index signature for type 'string' is missing in type 'number[]'.
-//   Overload 2 of 2, '(props: DefaultComponentProps<TypographyTypeMap<{}, "span">>): Element', gave the following error.
-//     Type '{ fontSize: number[]; fontWeight: string; color: string; textAlign: string; width: number; }' is not assignable to type 'SxProps<Theme> | undefined'.

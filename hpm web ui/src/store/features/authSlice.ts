@@ -1,7 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import type { RootState } from '.';
-import { login, LoginData } from '../services/api/authService';
-import { removeToken, setToken } from '../services/storageService';
+import type { RootState } from '..';
+import { login, LoginData } from '../../services/api/authService';
+import { removeToken, setToken } from '../../services/storageService';
 
 export const loginThunk = createAsyncThunk<
   string,

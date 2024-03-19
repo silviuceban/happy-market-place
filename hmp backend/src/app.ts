@@ -2,6 +2,16 @@ import express from "express";
 import { auth } from "express-oauth2-jwt-bearer";
 import { authConfig } from "./config/auth.js";
 import { pool } from "./database/pool.js";
+import {
+  getProductById,
+  getProducts,
+  jsonParser,
+  postOrder,
+} from "./controllers/controllers.js";
+import dotenv from "dotenv";
+
+dotenv.config();
+
 const app = express();
 
 const port = process.env.PORT || 5000;
@@ -15,18 +25,10 @@ app.get("/data", (req, res) => {
   res.send("Secured Resource result asdajgsdkaj");
 });
 
-app.get("/products", jwtCheck, async (req, res) => {
-  try {
-    const client = await pool.connect();
+app.get("/products", getProducts);
+app.get("/products/:id", jwtCheck, getProductById);
 
-    // SELECT * FROM public.products
-
-    const result = await client.query("SELECT * FROM public.products");
-    res.json(result.rows);
-  } catch (error) {
-    console.log(error.message);
-  }
-});
+app.post("/order", jsonParser, postOrder);
 
 app.listen(port);
 

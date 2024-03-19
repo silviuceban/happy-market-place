@@ -1,3 +1,8 @@
+export type ApiResponse<T> = {
+  items: T[];
+  total: number;
+};
+
 export interface RatingType {
   rate: number;
   count: number;
@@ -5,10 +10,9 @@ export interface RatingType {
 
 export interface Product {
   id: number;
-  title: string;
-  price: number;
-  description: string;
-  category: string;
+  name: string;
+  price: string;
+  description?: string;
   image: string;
   rating: RatingType;
 }

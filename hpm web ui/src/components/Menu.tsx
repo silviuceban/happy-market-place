@@ -1,13 +1,13 @@
 /* eslint-disable react/jsx-no-bind */ // different number of hooks to be rendered whether user is logged in or not
-import React from 'react';
+import React, { useCallback } from 'react';
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemText from '@mui/material/ListItemText';
-import { Avatar, Typography } from '@mui/material';
-import logo from '../assets/images/happyStore.png';
+import { Avatar, ListItemButton, Typography } from '@mui/material';
+import logo from '../assets/images/logoHmp.png';
 import MenuIcon from '@mui/icons-material/Menu';
 import { routerElements } from '../routing';
 import { useNavigate } from 'react-router-dom';
@@ -42,12 +42,15 @@ const styles = {
 };
 
 export default function Menu(): JSX.Element {
-  const { isAuthenticated } = useAuth0();
-  const authState = useSelector(store.getState);
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
 
   const [open, setOpen] = React.useState(false);
 
   const navigate = useNavigate();
+
+  const login = useCallback(async () => {
+    loginWithRedirect();
+  }, []);
 
   const toggleDrawer =
     (toOpen: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
@@ -103,33 +106,35 @@ export default function Menu(): JSX.Element {
           onKeyDown={toggleDrawer(false)}
         >
           <List>
+            {/* <ListItemButton
+              onClick={() => {
+                navigate('/');
+              }}
+            >
+              <ListItemText primary={'Home'} />
+            </ListItemButton> */}
             {routerElements.map((element) => {
-              if (isAuthenticated && element.url !== '/login') {
-                return (
-                  <ListItem
-                    button
-                    key={element.url}
-                    onClick={() => {
-                      navigate(element.url);
-                    }}
-                  >
-                    <ListItemText primary={element.label} />
-                  </ListItem>
-                );
-              } else if (element.url === '/' || element.url === '/login') {
-                return (
-                  <ListItem
-                    button
-                    key={element.url}
-                    onClick={() => {
-                      navigate(element.url);
-                    }}
-                  >
-                    <ListItemText primary={element.label} />
-                  </ListItem>
-                );
-              }
+              // if (isAuthenticated && element.url !== '/login') {
+              return (
+                <ListItemButton
+                  key={element.url}
+                  onClick={() => {
+                    navigate(element.url);
+                  }}
+                >
+                  <ListItemText primary={element.label} />
+                </ListItemButton>
+              );
+              // }
             })}
+
+            {/* <ListItemButton
+              onClick={() => {
+                login();
+              }}
+            >
+              <ListItemText primary={'Login'} />
+            </ListItemButton> */}
           </List>
         </Box>
       </Drawer>

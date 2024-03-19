@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { authReducer } from './authSlice';
-import { cartReducer } from './cartSlice';
-import { productsReducer } from './productsSlice';
+import { authReducer } from './features/authSlice';
+import { cartReducer } from './features/cartSlice';
+import { productsReducer } from './features/productsSlice';
 import storage from 'redux-persist/lib/storage';
 import { combineReducers } from 'redux';
 import {
@@ -13,10 +13,11 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
+import { userReducer } from './features/userSlice';
 
 const persistConfig = {
   key: 'happyStore',
-  blacklist: ['productsReducer'],
+  blacklist: ['products'],
   storage,
 };
 
@@ -24,6 +25,7 @@ const reducers = combineReducers({
   cart: cartReducer,
   auth: authReducer,
   products: productsReducer,
+  user: userReducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, reducers);
@@ -40,6 +42,7 @@ export const store = configureStore({
   //   auth: authReducer,
   //   products: productsReducer,
   //   cart: cartReducer,
+  //   user: userReducer,
   // },
 });
 

@@ -18,7 +18,7 @@ import {
   selectIsError,
   selectIsLoading,
   selectIsLoggedIn,
-} from '../store/authSlice';
+} from '../store/features/authSlice';
 import { LoginData } from '../services/api/authService';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
@@ -88,7 +88,7 @@ export default function LoginPage(): JSX.Element {
   const { loginWithRedirect, logout } = useAuth0();
   const login = useCallback(async () => {
     loginWithRedirect();
-  }, []);
+  }, [loginWithRedirect]);
   const logoutFn = useCallback(async () => {
     logout({ logoutParams: { returnTo: window.location.origin } });
   }, []);
